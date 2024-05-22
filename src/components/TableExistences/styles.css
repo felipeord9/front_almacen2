@@ -1,0 +1,12 @@
+.sizing {
+    overflow: auto;
+    font-size: 11px;
+    max-height: calc(100vh - 150px);
+    user-select: none;
+}
+
+@media (max-width: 767px) {
+  .sizing {
+    font-size: 9.4px !important;
+  }
+}

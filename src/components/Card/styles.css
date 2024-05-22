@@ -1,0 +1,34 @@
+.box {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+}
+
+.box-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 1.5rem;
+}
+
+.box-body p {
+    white-space: nowrap;
+}
+
+.box-body-img {
+    width: 100%;
+    margin: auto;
+}
+
+.box-body-img img {
+    width: 50px;
+}

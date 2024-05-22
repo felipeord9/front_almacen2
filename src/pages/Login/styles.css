@@ -1,0 +1,12 @@
+.container-login {
+    min-width: 200px;
+    min-height: 250;
+    max-width: 800;
+    background: #F0F0F0 !important;
+}
+
+@media (max-width: 767px) {
+    .image-login {
+        display: none;
+    }
+}
