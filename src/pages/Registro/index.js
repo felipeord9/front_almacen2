@@ -29,6 +29,8 @@ function Registro() {
     }
   };
 
+  const [status, setStatus] = useState('')
+
   return (
     <div className="pt-4">
       <ButtonBack />
@@ -48,7 +50,7 @@ function Registro() {
                 ? "w-75 p-2 bg-success btn-reg"
                 : "w-25 p-2 bg-success btn-reg"
             }
-            onClick={(e) => showComponent(1)}
+            onClick={(e) => (showComponent(1),setStatus('Entrada'))}
             style={{ whiteSpace: "nowrap" }}
             /* style={showEntrada ? {background: "#FE7F29"} : null} */
           >
@@ -60,7 +62,7 @@ function Registro() {
                 ? "w-75 p-2 btn-reg bg-danger"
                 : "w-25 p-2 btn-reg bg-danger"
             }
-            onClick={(e) => showComponent(2)}
+            onClick={(e) => (showComponent(2),setStatus('Salida'))}
             style={{ background: "#FE7F29", whiteSpace: "nowrap" }}
           >
             SALIDA
@@ -74,6 +76,7 @@ function Registro() {
               infoMovement={infoMovement}
               setInfoMovement={setInfoMovement}
               getProductId={setProductId}
+              status={status}
               getFunctionExistence={ejecutarFunctionExistence}
             />
             <TableExistences

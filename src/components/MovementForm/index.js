@@ -8,7 +8,7 @@ import { getAllPositions } from "../../services/positionService";
 import { config } from "../../config";
 import "./styles.css";
 
-function MovementForm({ typeForm, getProductId, ...props }) {
+function MovementForm({ typeForm, status, getProductId, ...props }) {
   const { colaborator } = useContext(UserContext);
   const { cellar, setCellar } = useContext(CellarContext);
   const [products, setProducts] = useState([]);
@@ -82,10 +82,15 @@ function MovementForm({ typeForm, getProductId, ...props }) {
     setProductoSeleccionado(null)
   };
 
+  const[move,setMove]= useState('')
+
   const findById = (e) => {
     const { value } = e.target;
     const item = products.find((elem) => parseInt(elem.item.codigo) === parseInt(value));
-    getProductId(value);
+    if (status==='Salida') {
+      /* props.getProductId(value); */
+      getProductId(value)
+    }
     if (item && search) {
       setProductoSeleccionado(item);
       setSuggestions(products);
@@ -94,7 +99,9 @@ function MovementForm({ typeForm, getProductId, ...props }) {
       setProduct(null);
     } else {
       setProductoSeleccionado(null);
+      if(status==='Salida'){
         props.setInfoMovement(null);
+      }
         search.searchDesc = "";
         search.position = "";
         search.client="";
@@ -579,6 +586,7 @@ function MovementForm({ typeForm, getProductId, ...props }) {
       </div>
       {/* {JSON.stringify(props.infoMovement)}
       {JSON.stringify(productoSeleccionado)} */}
+      {JSON.stringify(move)}
     </form>
   );
 }
