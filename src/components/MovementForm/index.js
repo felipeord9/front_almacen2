@@ -78,6 +78,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
       amount: "",
       position: null,
       note: "",
+      client:"",
     });
     setProductoSeleccionado(null)
   };
@@ -96,6 +97,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
       setSuggestions(products);
       search.searchDesc = "";
       search.position = "";
+      search.client = "";
       setProduct(null);
     } else {
       setProductoSeleccionado(null);
@@ -443,10 +445,10 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                     ? props.infoMovement.position_id
                     : null
                 } */
-                value={props.infoMovement ? props?.infoMovement?.position_id : search.client}
+                value={props.infoMovement ? props?.infoMovement?.position_id : search.position}
                 disabled={typeForm === "salida" && true}
               >
-                <option id={0} name="position" value='' disabled selected>
+                <option name="position" value="" disabled selected>
                   -- SELECCIONAR POSICIÓN --
                 </option>
                 {positions?.map((position, index) => (
@@ -511,7 +513,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
             <label>Cliente</label>
             <div className="combobox-container">
               <select
-                id="select-positions"
+                id="select-client"
                 ref={selectClientRef}
                 className="w-100 h-100 container-select form-select"
                 onChange={handleSelectClient}
@@ -525,36 +527,56 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                 value={props.infoMovement ? props?.infoMovement?.client : search.client}
                 disabled={typeForm === "salida" && true}
               >
-                <option id={0} name="position" value='' disabled selected>
+                <option id={0} name="client" value="" disabled selected>
                   -- SELECCIONAR CLIENTE --
                 </option>
-                <option value='AGENCIAS' >AGENCIAS</option>
-                <option value='ALM EXITO' >ALM ÉXITO</option>
-                <option value='ALVARO CUBILLOS' >ALVARO CUBILLOS</option>
-                <option value='ARA' >ARA</option>
-                <option value='CARIBE' >CARIBE</option>
-                <option value='CARVEL' >CARVEL</option>
-                <option value='CENCOSUD' >CENCOSUD</option>
-                <option value='COMFANDI' >COMFANDI</option>
-                <option value='CYV' >CYV</option>
-                <option value='LA GRAN COLOMBIA' >LA GRAN COLOMBIA</option>
-                <option value='LA MONTAÑA' >LA MONTAÑA</option>
-                <option value='LA RECETTA' >LA RECETTA</option>
-                <option value='LA SIRENITA' >LA SIRENITA</option>
-                <option value='MAKRO' >MAKRO</option>
-                <option value='MARTINEZ MARTELO' >MARTINEZ MARTELO</option>
-                <option value='MERCA Z' >MERCA Z</option>
-                <option value='MERCAMIO' >MERCAMIO</option>
-                <option value='MERCAR' >MERCAR</option>
-                <option value='MERCAUNIÓN' >MERCAUNIÓN</option>
-                <option value='OLIMPICA' >OLIMPICA</option>
-                <option value='PERLAMAR' >PERLAMAR</option>
-                <option value='PRICESMART' >PRICESMART</option>
-                <option value='SODEXO' >SODEXO</option>
-                <option value='SU PAPÁ' >SU PAPÁ</option>
-                <option value='SURTIFAMILIAR' >SURTIFAMILIAR</option>
-                <option value='SURTIPLAZA' >SURTIPLAZA</option>
-                <option value='VILLAMARIA' >VILLAMARIA</option>
+                <option value='SU PAPÁ  IQF' >SU PAPÁ  IQF</option>
+                <option value='ALM ÉXITO  GL' >ALM ÉXITO  GL</option>
+                <option value='ALM ÉXITO  MARCA BLANCA' >ALM ÉXITO  MARCA BLANCA</option>
+                <option value='AGENCIAS  IQF X 20' >AGENCIAS  IQF X 20</option>
+                <option value='CENCOSUD  IQF X 10' >CENCOSUD  IQF X 10</option>
+                <option value='CYV  IQF' >CYV  IQF</option>
+                <option value='AGENCIAS  GL' >AGENCIAS  GL</option>
+                <option value='AGENCIAS  MARCA PROPIA' >AGENCIAS  MARCA PROPIA</option>
+                <option value='VILLAMARIA  IQF' >VILLAMARIA  IQF</option>
+                <option value='ALVARO CUBILLOS  IQF' >ALVARO CUBILLOS  IQF</option>
+                <option value='ALVARO CUBILLOS  MARCA BLANCA' >ALVARO CUBILLOS  MARCA BLANCA</option>
+                <option value='MERCAR  MARCA BLANCA' >MERCAR  MARCA BLANCA</option>
+                <option value='CARIBE  IQF' >CARIBE  IQF</option>
+                <option value='OLIMPICA  MARCA BLANCA' >OLIMPICA  MARCA BLANCA</option>
+                <option value='OLIMPICA  GL' >OLIMPICA  GL</option>
+                <option value='AGENCIAS  MARCA BLANCA' >AGENCIAS  MARCA BLANCA</option>
+                <option value='LA MONTAÑA  GL' >LA MONTAÑA  GL</option>
+                <option value='SURTIPLAZA  GL' >SURTIPLAZA  GL</option>
+                <option value='SURTIFAMILIAR  GL' >SURTIFAMILIAR  GL</option>
+                <option value='MERCAMIO  GL' >MERCAMIO  GL</option>
+                <option value='SU PAPÁ  GL' >SU PAPÁ  GL</option>
+                <option value='MERCAR  GL' >MERCAR  GL</option>
+                <option value='CENCOSUD  MARCA BLANCA' >CENCOSUD  MARCA BLANCA</option>
+                <option value='LA GRAN COLOMBIA  GL' >LA GRAN COLOMBIA  GL</option>
+                <option value='MERCAUNIÓN  GL' >MERCAUNIÓN  GL</option>
+                <option value='MERCA Z  GL' >MERCA Z  GL</option>
+                <option value='MERCAMIO  MARCA PROPIA' >MERCAMIO  MARCA PROPIA</option>
+                <option value='LA RECETTA  MARCA BLANCA'>LA RECETTA  MARCA BLANCA</option>
+                <option value='MAKRO  MARCA BLANCA'>MAKRO  MARCA BLANCA</option>
+                <option value='SODEXO  MARCA BLANCA'>SODEXO  MARCA BLANCA</option>
+                <option value='ARA  GL'>ARA  GL</option>
+                <option value='COMFANDI  GL'>COMFANDI  GL</option>
+                <option value='CARVEL  GL'>CARVEL  GL</option>
+                <option value='LA MONTAÑA  IQF'>LA MONTAÑA  IQF</option>
+                <option value='CYV  MARCA PROPIA'>CYV  MARCA PROPIA</option>
+                <option value='CARIBE  MARCA BLANCA'>CARIBE  MARCA BLANCA</option>
+                <option value='LA MONTAÑA  MARCA BLANCA'>LA MONTAÑA  MARCA BLANCA</option>
+                <option value='AGENCIAS  IQF'>AGENCIAS  IQF</option>
+                <option value='SURTIFAMILIAR  MARCA BLANCA'>SURTIFAMILIAR  MARCA BLANCA</option>
+                <option value='SU PAPÁ  MARCA BLANCA'>SU PAPÁ  MARCA BLANCA</option>
+                <option value='MAKRO  GL'>MAKRO  GL</option>
+                <option value='MARTINEZ MARTELO  MARCA BLANCA'>MARTINEZ MARTELO  MARCA BLANCA</option>
+                <option value='LA SIRENITA  MARCA BLANCA'>LA SIRENITA  MARCA BLANCA</option>
+                <option value='CYV  MARCA BLANCA'>CYV  MARCA BLANCA</option>
+                <option value='PERLAMAR  MARCA BLANCA'>PERLAMAR  MARCA BLANCA</option>
+                <option value='MAKRO  MARCA PROPIA'>MAKRO  MARCA PROPIA</option>
+                <option value='PRICESMART  MARCA BLANCA'>PRICESMART  MARCA BLANCA</option>
               </select>
             </div>
           </div>
