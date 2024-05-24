@@ -577,6 +577,9 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                 <option value='PERLAMAR  MARCA BLANCA'>PERLAMAR  MARCA BLANCA</option>
                 <option value='MAKRO  MARCA PROPIA'>MAKRO  MARCA PROPIA</option>
                 <option value='PRICESMART  MARCA BLANCA'>PRICESMART  MARCA BLANCA</option>
+                <option value='CLIENTE JORDE IQF'>CLIENTE JORDE IQF</option>
+                <option value='CLIENTE JORGE MARCA BLANCA'>CLIENTE JORGE MARCA BLANCA</option>
+                <option value='CLIENTE JORGE GL'>CLIENTE JORGE GL</option>
               </select>
             </div>
           </div>
