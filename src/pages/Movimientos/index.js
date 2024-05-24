@@ -177,6 +177,7 @@ function Movimientos() {
             <th>Colaborador</th>
             <th>Movimiento</th>
             <th>Posición</th>
+            <th>Cliente</th>
             <th>Fecha Creacion</th>
             <th>Estado</th>
             <th>Nota</th>
@@ -185,7 +186,7 @@ function Movimientos() {
             <th>Motivo de Eliminacion</th>
           </tr>
         </thead>
-        {/* <tbody>
+        <tbody>
           {Object.entries(filterMovements).length > 0
             && filterMovements.map((elem) => (
                 <tr>
@@ -196,6 +197,7 @@ function Movimientos() {
                   <td>{elem.colaborator.nombre}</td>
                   <td>{elem.movementType}</td>
                   <td>{elem.position.name}</td>
+                  <td>{elem.client}</td>
                   <td>{new Date(elem.createdAt).toLocaleString("en-US")}</td>
                   <td>{elem.deleted ? "ELIMINADO" : "ACTIVO"}</td>
                   <td>{elem.note}</td>
@@ -221,7 +223,7 @@ function Movimientos() {
               </tr>
             </>
           ) : null}
-        </tbody> */}
+        </tbody>
       </table>
       {/* </div> */}
     </div>

@@ -77,7 +77,7 @@ function Home() {
       </div>
       {/* <div>
         <btn className="btn btn-sm btn-success fw-bold w-100" onClick={(e) => navigate('/ver/productos')}>Ver Productos</btn>
-      </div>
+      </div> */}
       <table id="table-existence" className="d-none" style={{ fontSize: 11 }}>
         <thead>
           <tr>
@@ -97,7 +97,7 @@ function Home() {
             </tr>
           ))}
         </tbody>
-      </table> */}
+      </table>
     </div>
   );
 }
