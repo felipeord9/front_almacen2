@@ -115,6 +115,8 @@ function TableMovements({ filterMovements, option }) {
           <th>Colaborador</th>
           <th>Posición</th>
           <th>Cliente</th>
+          <th>Lote</th>
+          <th>Vence</th>
           <th>Creacion</th>
           <th></th>
         </tr>
@@ -132,6 +134,8 @@ function TableMovements({ filterMovements, option }) {
                   <td>{elem.colaborator?.nombre}</td>
                   <td style={{ whiteSpace:'nowrap'}}>{elem?.position.name}</td>
                   <td>{elem?.client}</td>
+                  <td>{elem?.lote}</td>
+                  <td>{elem.fechaVencimiento && new Date(elem?.fechaVencimiento).toLocaleDateString()}</td>
                   <td>{new Date(elem?.createdAt).toLocaleString("en-US")}</td>
                   <td className="fs-6">
                     <button

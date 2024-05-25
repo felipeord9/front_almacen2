@@ -21,10 +21,14 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
     searchDesc: "",
     amount: "",
     position: "",
+    positionFinal: "",
     note: "",
     client:'',
+    lote:"",
+    fechaVencimiento:"",
   });
   const selectPositionRef = useRef();
+  const selectPositionFinalRef = useRef();
   const selectClientRef = useRef();
   const ref = useRef();
 
@@ -79,6 +83,9 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
       position: null,
       note: "",
       client:"",
+      lote:"",
+      fechaVencimiento:"",
+      positionFinal:"",
     });
     setProductoSeleccionado(null)
   };
@@ -88,7 +95,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
   const findById = (e) => {
     const { value } = e.target;
     const item = products.find((elem) => parseInt(elem.item.codigo) === parseInt(value));
-    if (status==='Salida') {
+    if (status==='Salida' || typeForm==='transferencia') {
       /* props.getProductId(value); */
       getProductId(value)
     }
@@ -98,6 +105,9 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
       search.searchDesc = "";
       search.position = "";
       search.client = "";
+      search.lote="";
+      search.fechaVencimiento="";
+      search.positionFinal="";
       setProduct(null);
     } else {
       setProductoSeleccionado(null);
@@ -107,6 +117,9 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
         search.searchDesc = "";
         search.position = "";
         search.client="";
+        search.lote="";
+        search.fechaVencimiento="";
+        search.positionFinal="";
         setProduct(null);
         setSuggestions(products);
         
@@ -178,6 +191,13 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
       position: value,
     });
   };
+  const handleSelectFlagFinal = (e) => {
+    const { value } = e.target;
+    setSearch({
+      ...search,
+      positionFinal: value,
+    });
+  };
 
   const handleSelectClient = (e) => {
     const { value } = e.target;
@@ -190,7 +210,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
   const handleClick = async (e) => {
     e.preventDefault();
     const movementType = e.target.name;
-    if ((productoSeleccionado || props.infoMovement ) && search.amount && search.position) {
+    if ((productoSeleccionado || props.infoMovement ) && search.amount && search.position ) {
       const body = {
         productId: productoSeleccionado ? productoSeleccionado.item.codigo : search.searchRef,
         colaboratorId: colaborator.id,
@@ -200,6 +220,8 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
         note: search.note,
         positionId: props.infoMovement ? props.infoMovement.position_id : search.position,
         client : props.infoMovement ? props.infoMovement.client : search.client,
+        lote: props.infoMovement ? props.infoMovement.lote : search.lote,
+        fechaVencimiento: props.infoMovement ? props.infoMovement.fechaVencimiento : new Date(search.fechaVencimiento),
         createdAt: new Date(),
       };
 
@@ -291,6 +313,131 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
           });
           props.getFunctionExistence();
         }
+      } else if(movementType === "transferencia"){
+        const salida = {
+          productId: productoSeleccionado ? productoSeleccionado.item.codigo : search.searchRef,
+          colaboratorId: colaborator.id,
+          cellarId: cellar.id,
+          amount: parseInt(search.amount),
+          movementType: 'salida',
+          note: search.note,
+          positionId: props.infoMovement ? props.infoMovement.position_id : search.position,
+          client : props.infoMovement ? props.infoMovement.client : search.client,
+          lote: props.infoMovement ? props.infoMovement.lote : search.lote,
+          fechaVencimiento: props.infoMovement ? props.infoMovement.fechaVencimiento : new Date(search.fechaVencimiento),
+          createdAt: new Date(),
+        };
+
+        const entrada = {
+          productId: productoSeleccionado ? productoSeleccionado.item.codigo : search.searchRef,
+          colaboratorId: colaborator.id,
+          cellarId: cellar.id,
+          amount: parseInt(search.amount),
+          movementType: 'entrada',
+          note: search.note,
+          positionId: search.positionFinal,
+          client : props.infoMovement ? props.infoMovement.client : search.client,
+          lote: props.infoMovement ? props.infoMovement.lote : search.lote,
+          fechaVencimiento: props.infoMovement ? props.infoMovement.fechaVencimiento : new Date(search.fechaVencimiento),
+          createdAt: new Date(),
+        };
+
+        const { movements } = await getMovements();
+        const filMov = movements.filter(
+          (elem) =>
+            elem.product.id === product.id &&
+            elem.position.name === search.position &&
+            elem.deleted === false
+        );
+
+        const amountEntradas = filMov
+          .filter(
+            (elem) =>
+              elem.movementType === "entrada" &&
+              elem.position.name === search.position
+          )
+          .reduce((a, b) => a + b.amount, 0);
+        const amountSalidas = filMov
+          .filter(
+            (elem) =>
+              elem.movementType === "salida" &&
+              elem.position.name === search.position
+          )
+          .reduce((a, b) => a + b.amount, 0);
+
+        const final = positions?.find((item)=>{
+          if(parseInt(item.id)===parseInt(search.positionFinal)){
+            return JSON.stringify(item)
+          }
+        })
+
+        if (amountEntradas - amountSalidas >= search.amount) {
+          sweal({
+            title: "ESTAS SEGURO?",
+            text: ` Vas a trasnferir ${search.amount}${product.um} de ${product.description} de la posición ${search.position} a ${final.name/* search.positionFinal */}`,
+            buttons: ["Cancelar", "Si, continuar"],
+          }).then(async (deleted) => {
+            if (deleted) {
+              const { movements } = await getMovements();
+              const filMov = movements.filter(
+                (elem) =>
+                  elem.product.id === product.id &&
+                  elem.position.name === search.position &&
+                  elem.deleted === false
+              );
+
+              const amountEntradas = filMov
+                .filter(
+                  (elem) =>
+                    elem.movementType === "entrada" &&
+                    elem.position.name === search.position
+                )
+                .reduce((a, b) => a + b.amount, 0);
+              const amountSalidas = filMov
+                .filter(
+                  (elem) =>
+                    elem.movementType === "salida" &&
+                    elem.position.name === search.position
+                )
+                .reduce((a, b) => a + b.amount, 0);
+
+              if (amountEntradas - amountSalidas >= search.amount) {
+                createMovement(salida).then(() => {
+                  createMovement(entrada).then(()=>{
+                    sweal({
+                      text: "Se ha tranferido el producto exitosamente!",
+                      icon: "success",
+                    });
+                  })
+                });
+                cleanForm();
+                props.getFunctionExistence();
+                getMovements();
+              } else {
+                sweal({
+                  title: "¡ATENCIÓN!",
+                  text: "No hay la cantidad suficiente para hacer el movimiento",
+                  icon: "warning",
+                  button: "Cerrar",
+                  dangerMode: true,
+                  timer: 3000,
+                });
+                props.getFunctionExistence();
+              }
+            }
+          });
+        } else {
+          sweal({
+            title: "¡ATENCION!",
+            text: "No hay la cantidad suficiente para hacer el movimiento",
+            icon: "warning",
+            button: "Cerrar",
+            dangerMode: true,
+            timer: 3000,
+          });
+          props.getFunctionExistence();
+        }
+        
       } else {
         sweal({
           title: "ESTAS SEGURO?",
@@ -407,7 +554,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                   findById(e)
                   handlerChangeSuggestions(e)
                 }}
-                disabled={typeForm === "salida" ? true : false}
+                disabled={typeForm === "salida" || status === 'Transferencia' ? true : false}
               />
               <select
                 ref={ref}
@@ -418,6 +565,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                     : "w-100 h-100 container-select form-select"
                 }
                 onChange={findById}
+                disabled={status === 'Transferencia' ? true : false}
               >
                 <option id={0} name="product" disabled selected>
                   -- SELECCIONAR UN PRODUCTO --
@@ -446,7 +594,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                     : null
                 } */
                 value={props.infoMovement ? props?.infoMovement?.position_id : search.position}
-                disabled={typeForm === "salida" && true}
+                disabled={typeForm === "salida" || status === 'Transferencia' && true}
               >
                 <option name="position" value="" disabled selected>
                   -- SELECCIONAR POSICIÓN --
@@ -525,7 +673,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
                     : null
                 } */
                 value={props.infoMovement ? props?.infoMovement?.client : search.client}
-                disabled={typeForm === "salida" && true}
+                disabled={typeForm === "salida" || status === 'Transferencia' && true}
               >
                 <option id={0} name="client" value="" disabled selected>
                   -- SELECCIONAR CLIENTE --
@@ -583,16 +731,91 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
               </select>
             </div>
           </div>
-          <div className="input-group mt-2">
-            <span class="input-group-text">Nota</span>
-            <textarea
-              name="note"
-              class="form-control"
-              aria-label="With textarea"
-              value={search.note}
+          <div className="d-flex flex-column justify-content-start">
+            <label>Lote</label>
+            <input
+              name="lote"
+              type="text"
+              value={props.infoMovement ? props?.infoMovement?.lote : search.lote}
+              required
+              disabled={status==='Salida' || status === 'Transferencia'}
+              className="form-control"
               onChange={handleChange}
-            ></textarea>
+            />
           </div>
+          {status==='Salida' || status === 'Transferencia' ?
+            <div className="d-flex flex-column justify-content-start">
+              <label>Fecha vencimiento</label>
+              <input
+                name="fechaVencimiento"
+                type="text"
+                value={props.infoMovement ? new Date(props?.infoMovement?.fechaVencimiento).toLocaleDateString() : search.fechaVencimiento}
+                className="form-control"
+                onChange={handleChange}
+                required
+                disabled={status==='Salida' || status === 'Transferencia' && true}
+              />
+            </div> :
+            <div className="d-flex flex-column justify-content-start">
+              <label>Fecha vencimiento</label>
+              <input
+                name="fechaVencimiento"
+                type="date"
+                value={props.infoMovement ? new Date(props?.infoMovement?.fechaVencimiento).toLocaleDateString() : search.fechaVencimiento}
+                className="form-control"
+                onChange={handleChange}
+                required
+                disabled={status==='Salida' && true}
+              />
+            </div>
+          }
+          {status === 'Transferencia' && 
+            <div className="d-flex flex-column justify-content-start">
+              <label>Posición Final</label>
+              <div className="combobox-container">
+                <select
+                  id="select-positions-final"
+                  ref={selectPositionFinalRef}
+                  className="w-100 h-100 container-select form-select"
+                  onChange={handleSelectFlagFinal}
+                  /* value={
+                    search.position
+                      ? search.position
+                      : props.infoMovement
+                      ? props.infoMovement.position_id
+                      : null
+                  } */
+                  value={search.positionFinal}
+                  disabled={typeForm === "salida" && true}
+                >
+                  <option name="position" value="" disabled selected>
+                    -- SELECCIONAR POSICIÓN --
+                  </option>
+                  {positions?.map((position, index) => (
+                    <option
+                      id={position.id}
+                      value={position.id}
+                      name="position"
+                    >
+                      {position.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          }
+          {status !== 'Transferencia' &&
+            <div className="input-group mt-2">
+              <span class="input-group-text">Nota</span>
+              <textarea
+                name="note"
+                class="form-control"
+                aria-label="With textarea"
+                value={search.note}
+                onChange={handleChange}
+              ></textarea>
+            </div>
+          }
         </div>
       </div>
       <div className="d-flex flex-row align-items-center justify-content-evenly">
@@ -601,7 +824,9 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
           className={
             typeForm === "entrada"
               ? "btn btn-success w-100"
-              : "btn btn-danger text-light w-100"
+              : typeForm === "salida" ? 
+              "btn btn-danger text-light w-100"
+              : "btn btn-primary text-light w-100"
           }
           //style={typeForm === "salida" ? { background: "#FE7F29"} : null}
           onClick={handleClick}
@@ -611,7 +836,7 @@ function MovementForm({ typeForm, status, getProductId, ...props }) {
       </div>
       {/* {JSON.stringify(props.infoMovement)}
       {JSON.stringify(productoSeleccionado)} */}
-      {JSON.stringify(move)}
+      {/* {JSON.stringify(move)} */}
     </form>
   );
 }

@@ -9,6 +9,7 @@ import "./styles.css";
 function Registro() {
   const [showEntrada, setShowEntrada] = useState(true);
   const [showSalida, setShowSalida] = useState(false);
+  const [showTranfer, setShowTransfer] = useState(false);
   const [infoMovement, setInfoMovement] = useState(null);
   const [productId, setProductId] = useState(null);
   const [funcion, setFuncion] = useState(null);
@@ -17,6 +18,7 @@ function Registro() {
   const showComponent = (component) => {
     setShowEntrada(component === 1);
     setShowSalida(component === 2);
+    setShowTransfer(component === 3);
   };
 
   const getFunctionExistence = (functi) => {
@@ -47,7 +49,7 @@ function Registro() {
           <div
             className={
               showEntrada
-                ? "w-75 p-2 bg-success btn-reg"
+                ? "w-50 p-2 bg-success btn-reg"
                 : "w-25 p-2 bg-success btn-reg"
             }
             onClick={(e) => (showComponent(1),setStatus('Entrada'))}
@@ -59,7 +61,7 @@ function Registro() {
           <div
             className={
               showSalida
-                ? "w-75 p-2 btn-reg bg-danger"
+                ? "w-50 p-2 btn-reg bg-danger"
                 : "w-25 p-2 btn-reg bg-danger"
             }
             onClick={(e) => (showComponent(2),setStatus('Salida'))}
@@ -67,12 +69,40 @@ function Registro() {
           >
             SALIDA
           </div>
+          <div
+            className={
+              showTranfer
+                ? "w-50 p-2 btn-reg bg-primary"
+                : "w-25 p-2 btn-reg bg-primary"
+            }
+            onClick={(e) => (showComponent(3),setStatus('Transferencia'))}
+            style={{ background: "#FE7F29", whiteSpace: "nowrap" }}
+          >
+            TRANSFERENCIA
+          </div>
         </div>
         {showEntrada && <MovementForm typeForm={"entrada"} />}
         {showSalida && (
           <div className="reverse d-flex flex-row gap-1" style={{ height: "63vh" }}>
             <MovementForm
               typeForm={"salida"}
+              infoMovement={infoMovement}
+              setInfoMovement={setInfoMovement}
+              getProductId={setProductId}
+              status={status}
+              getFunctionExistence={ejecutarFunctionExistence}
+            />
+            <TableExistences
+              getInfo={setInfoMovement}
+              productId={productId}
+              getFunction={getFunctionExistence}
+            />
+          </div>
+        )}
+        {showTranfer && (
+          <div className="reverse d-flex flex-row gap-1" style={{ height: "63vh" }}>
+            <MovementForm
+              typeForm={"transferencia"}
               infoMovement={infoMovement}
               setInfoMovement={setInfoMovement}
               getProductId={setProductId}

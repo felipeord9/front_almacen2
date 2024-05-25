@@ -58,6 +58,8 @@ function TableExistences({ getInfo, productId, getFunction }) {
               <th>Existencia</th>
               <th>U.M</th>
               <th>Cliente</th>
+              <th>Lote</th>
+              <th>Vence</th>
             </tr>
           </thead>
           <tbody>
@@ -74,6 +76,8 @@ function TableExistences({ getInfo, productId, getFunction }) {
                     <td>{elemt.total}</td>
                     <td>{elemt.um}</td>
                     <td>{elemt.client}</td>
+                    <td>{elemt.lote}</td>
+                    <td>{elemt.fechaVencimiento && new Date(elemt.fechaVencimiento).toLocaleDateString()}</td>
                   </tr>
                 ))
               : null}
